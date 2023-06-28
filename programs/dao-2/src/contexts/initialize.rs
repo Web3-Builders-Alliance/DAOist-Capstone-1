@@ -51,7 +51,8 @@ impl<'info> Initialize<'info> {
         issue_amount: u64,
         proposal_fee: u64,
         max_supply: u64,
-        min_quorum: u64,
+        min_quorum: u64,//Percentage
+        min_threshold: u64,
         max_expiry: u64,
     ) -> Result<()> {
         let (
@@ -73,6 +74,7 @@ impl<'info> Initialize<'info> {
             proposal_fee,
             max_supply,
             min_quorum,
+            min_threshold,
             max_expiry,
             auth_bump,
             config_bump,

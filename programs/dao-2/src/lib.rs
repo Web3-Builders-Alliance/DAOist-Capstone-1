@@ -23,9 +23,10 @@ pub mod dao_2 {
         proposal_fee: u64,
         max_supply: u64,
         min_quorum: u64,
+        min_threshold: u64,
         max_expiry: u64
     ) -> Result<()> {
-        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, max_expiry)
+        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, min_threshold, max_expiry)
     }
 
     // Handle token issuance
@@ -41,9 +42,9 @@ pub mod dao_2 {
     }
 
     // Close a stake account when you're done with it
-    pub fn close_stake(ctx: Context<CloseStake>) -> Result<()> {
+    pub fn close_stake(ctx: Context<CleanupStake>) -> Result<()> {
         // Create a stake account
-        ctx.accounts.close(&ctx.bumps)
+        ctx.accounts.cleanup_stake(&ctx.bumps)
     }
 
     // Stake DAO tokens
@@ -64,7 +65,8 @@ pub mod dao_2 {
         id: u64, 
         name: String, 
         gist: String, 
-        proposal: ProposalType, 
+        proposal: ProposalType,
+        quorum: u64, 
         threshold: u64, 
         amount: u64, 
         data: Vec<u8>
@@ -78,6 +80,7 @@ pub mod dao_2 {
             name, 
             gist,
             proposal,
+            quorum,
             threshold, 
             amount,
             *ctx.bumps.get("proposal").ok_or(DaoError::BumpError)?
@@ -86,7 +89,7 @@ pub mod dao_2 {
 
     // Cleanup a proposal
     pub fn cleanup_proposal(
-        ctx: Context<CreateProposal>, 
+        ctx: Context<CleanupProposal>, 
     ) -> Result<()> {
         // Pay a proposal fee to DAO treasury
         ctx.accounts.cleanup_proposal()
@@ -94,10 +97,10 @@ pub mod dao_2 {
 
      // Cleanup a proposal
      pub fn execute_proposal(
-        ctx: Context<CreateProposal>, 
+        ctx: Context<CleanupProposal>, 
     ) -> Result<()> {
         // Pay a proposal fee to DAO treasury
-        ctx.accounts.cleanup_proposal()
+        ctx.accounts.execute_proposal()
     }
 
     // Vote on a proposal

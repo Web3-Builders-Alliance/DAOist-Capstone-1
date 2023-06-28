@@ -43,15 +43,18 @@ impl<'info> CreateProposal<'info> {
         gist: String,
         proposal: ProposalType,
         quorum: u64,
+        threshold: u64,
         expiry: u64,
         bump: u8
     ) -> Result<()> {
         // Make sure user has staked
-        self.stake_state.check_stake()?;
+        self.stake_state.check_stake_amount(50)?;
         // Check ID and add proposal
         self.config.add_proposal(id)?;
         // Check minimum quorum
         self.config.check_min_quorum(quorum)?;
+        // Check minimum threshold
+        self.config.check_min_threshold(threshold)?;
         // Check max expiry
         self.config.check_max_expiry(expiry)?;
         // Initialize the proposal
@@ -61,6 +64,7 @@ impl<'info> CreateProposal<'info> {
             gist, // 72 bytes (39 bytes + / + 32 byte ID)
             proposal,
             quorum,
+            threshold,
             expiry,
             bump
         )

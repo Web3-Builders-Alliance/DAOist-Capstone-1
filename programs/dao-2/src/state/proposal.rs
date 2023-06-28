@@ -9,6 +9,7 @@ pub struct Proposal {
     pub proposal: ProposalType,
     pub result: ProposalStatus,
     pub quorum: u64,
+    pub threshold: u64,
     pub votes: u64,
     pub expiry: u64,
     pub bump: u8,
@@ -23,6 +24,7 @@ impl Proposal {
         gist: String,
         proposal: ProposalType,
         quorum: u64,
+        threshold:u64,
         expiry: u64,
         bump: u8  
     ) -> Result<()> {
@@ -32,12 +34,20 @@ impl Proposal {
         self.proposal = proposal;
         self.name = name;
         self.gist = gist;
-        self.result = ProposalStatus::Open;
+        self.result = ProposalStatus::PreVoting;
         self.quorum = quorum;
         self.votes = 0;
         self.bump = bump;
         self.expiry = Clock::get()?.slot.checked_add(expiry).ok_or(DaoError::Overflow)?;
         Ok(())
+    }
+
+     pub fn try_initialize(
+        &mut self
+    ) {      
+   /*  if current_time >= proposal_created_time + 1 epoch in slots */ {
+        self.result = ProposalStatus::Open; 
+        }
     }
 
     pub fn try_finalize(
@@ -56,6 +66,14 @@ impl Proposal {
         require!(Clock::get()?.slot < self.expiry, DaoError::Expired);
         Ok(())
     }
+
+    pub fn is_votable(
+        &mut self
+    ) -> Result<()> {
+        require!(self.result == ProposalStatus::PreVoting, DaoError::InvalidProposalStatus);
+        Ok(())
+    }
+
 
     pub fn is_open(
         &mut self
@@ -82,6 +100,8 @@ impl Proposal {
         &mut self,
         amount: u64
     ) -> Result<()> {
+        self.try_initialize();
+        require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
         self.votes = self.votes.checked_add(amount).ok_or(DaoError::Overflow)?;
         self.try_finalize();
         Ok(())
@@ -91,6 +111,7 @@ impl Proposal {
         &mut self,
         amount: u64
     ) -> Result<()> {
+        require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
         self.votes = self.votes.checked_sub(amount).ok_or(DaoError::Underflow)?;
         Ok(())
     }
@@ -105,6 +126,7 @@ pub enum ProposalType {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum ProposalStatus {
+    PreVoting,
     Open,
     Succeeded,
     Failed
