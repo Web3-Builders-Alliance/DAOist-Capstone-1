@@ -1,0 +1,13 @@
+/home/beliv/wba/anchor/anchor-dao-2023/target/debug/deps/quote-b277627876a872e1.rmeta: /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/lib.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ext.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/format.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ident_fragment.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/to_tokens.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/runtime.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/spanned.rs
+
+/home/beliv/wba/anchor/anchor-dao-2023/target/debug/deps/libquote-b277627876a872e1.rlib: /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/lib.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ext.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/format.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ident_fragment.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/to_tokens.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/runtime.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/spanned.rs
+
+/home/beliv/wba/anchor/anchor-dao-2023/target/debug/deps/quote-b277627876a872e1.d: /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/lib.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ext.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/format.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ident_fragment.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/to_tokens.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/runtime.rs /home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/spanned.rs
+
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/lib.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ext.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/format.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/ident_fragment.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/to_tokens.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/runtime.rs:
+/home/beliv/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.28/src/spanned.rs:
