@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
-use crate::{state::{config::DaoConfig, Proposal, StakeState, ProposalType}, errors::DaoError};
+use crate::{state::{config::DaoConfig, Proposal, StakeState, ProposalType, VoteType}, errors::DaoError};
 
 #[derive(Accounts)]
 #[instruction(id: u64)]
@@ -42,13 +42,22 @@ impl<'info> CreateProposal<'info> {
         name: String,
         gist: String,
         proposal: ProposalType,
+        vote_type: VoteType,
         quorum: u64,
         threshold: u64,
         expiry: u64,
         bump: u8
     ) -> Result<()> {
+        
+     if proposal.is_single_choice() {
+        // Lógica para lidar com uma proposta de escolha única
+        } else if proposal.is_multi_choice() {
+        // Lógica para lidar com uma proposta de escolha múltipla
+        } else {    // ...
+        }
+        // Lógica para lidar com outros tipos de propostas
         // Make sure user has staked
-        self.stake_state.check_stake_amount(50)?;
+        self.config.check_min_stake(self.stake_state.amount)?;
         // Check ID and add proposal
         self.config.add_proposal(id)?;
         // Check minimum quorum
@@ -63,6 +72,7 @@ impl<'info> CreateProposal<'info> {
             name, // A proposal name
             gist, // 72 bytes (39 bytes + / + 32 byte ID)
             proposal,
+            vote_type,
             quorum,
             threshold,
             expiry,

@@ -1,4 +1,4 @@
-use crate::{constants::*, errors::DaoError};
+use crate::{constants::*, errors::DaoError, accounts::Vote};
 use anchor_lang::prelude::*;
 
 #[account]
@@ -7,12 +7,14 @@ pub struct Proposal {
     pub name: String, // A proposal name
     pub gist: String, // 72 bytes (39 bytes + / + 32 char ID)
     pub proposal: ProposalType,
+    pub vote_type: VoteType,
     pub result: ProposalStatus,
     pub quorum: u64,
     pub threshold: u64,
     pub votes: u64,
     pub expiry: u64,
     pub bump: u8,
+    pub created_time: i64,
 }
 
 impl Proposal {
@@ -23,6 +25,7 @@ impl Proposal {
         name: String,
         gist: String,
         proposal: ProposalType,
+        vote_type: VoteType,
         quorum: u64,
         threshold:u64,
         expiry: u64,
@@ -32,6 +35,7 @@ impl Proposal {
         require!(gist.len() < 73, DaoError::InvalidGist);
         self.id = id;
         self.proposal = proposal;
+        self.vote_type = vote_type;
         self.name = name;
         self.gist = gist;
         self.result = ProposalStatus::PreVoting;
@@ -39,23 +43,49 @@ impl Proposal {
         self.votes = 0;
         self.bump = bump;
         self.expiry = Clock::get()?.slot.checked_add(expiry).ok_or(DaoError::Overflow)?;
+        self.created_time = Clock::get()?.slot;
         Ok(())
     }
 
+
+
+        pub fn is_single_choice(
+        &self
+    ) -> Result<()> {
+        require!(self.vote_type == VoteType::SingleChoice, DaoError::InvalidVoteType);
+        Ok(())
+    }
+
+   
+    pub fn is_multi_choice(
+        &self
+    ) -> Result<()> {
+        require!(self.vote_type == VoteType::MultipleChoice, DaoError::InvalidVoteType);
+        Ok(())
+    }
+
+}
+    // transition from PreVoting to Open
      pub fn try_initialize(
         &mut self
-    ) {      
-   /*  if current_time >= proposal_created_time + 1 epoch in slots */ {
+    ) { 
+        let current_time = Clock::get()?.slot;
+        let required_time = self.created_time + self.prevoting_period;
+
+        require!(current_time >= required_time, DaoError::InvalidRequiredTime);
         self.result = ProposalStatus::Open; 
-        }
+        
     }
+
+
+    //missing quorum
 
     pub fn try_finalize(
         &mut self
     ) {
-        if self.votes >= self.quorum && self.check_expiry().is_ok() {
+        if self.votes >= self.threshold && self.check_expiry().is_ok() {
             self.result = ProposalStatus::Succeeded
-        } else if self.votes < self.quorum && self.check_expiry().is_err() {
+        } else if self.votes < self.threshold && self.check_expiry().is_err() {
             self.result = ProposalStatus::Failed
         }
     }
@@ -115,6 +145,14 @@ impl Proposal {
         self.votes = self.votes.checked_sub(amount).ok_or(DaoError::Underflow)?;
         Ok(())
     }
+
+
+
+
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, Debug, PartialEq, Eq)]
+pub enum VoteType {
+    SingleChoice,
+    MultipleChoice,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq)]

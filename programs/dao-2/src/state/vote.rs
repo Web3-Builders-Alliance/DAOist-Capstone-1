@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 #[account]
 pub struct VoteState {
     pub owner: Pubkey,
-    /* pub votetype : VoteType, */
+    /* pub vote : VoteType, */
     pub amount: u64,
     //pub nft: vec<Pubkey>
     pub bump: u8
@@ -16,21 +16,17 @@ impl VoteState {
     pub fn init(
         &mut self,
         owner: Pubkey,
-        /* votetype: VoteType, */
+        /* vote: VoteType, */
         amount: u64,
         bump: u8,
     ) -> Result<()> {
         self.owner = owner;
-        /* self.votetype = votetype; */
+        /* self.vote = vote; */
         self.amount = amount;
         self.bump = bump;
         Ok(())
     }
 }
 
-/* #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq)]
-pub enum VoteType {
-    Single, // Single Vote
-    Multiple, // Multiple Vote
 
-} */
+

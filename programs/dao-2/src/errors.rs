@@ -37,5 +37,9 @@ pub enum DaoError {
     #[msg("Invalid stake amount")]
     InvalidStakeAmount,
     #[msg("Invalid Threshold")]
-    InvalidThreshold
+    InvalidThreshold,
+    #[msg("Invalid Required Time")]
+    InvalidRequiredTime,
+    #[msg("Invalid Vote Type")]
+    InvalidVoteType
 }

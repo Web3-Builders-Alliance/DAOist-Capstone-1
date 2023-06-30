@@ -54,6 +54,8 @@ impl<'info> Initialize<'info> {
         min_quorum: u64,//Percentage
         min_threshold: u64,
         max_expiry: u64,
+        min_stake:u64,
+        prevoting_period: u64,
     ) -> Result<()> {
         let (
             auth_bump,
@@ -76,6 +78,8 @@ impl<'info> Initialize<'info> {
             min_quorum,
             min_threshold,
             max_expiry,
+            min_stake,
+            prevoting_period,
             auth_bump,
             config_bump,
             mint_bump,

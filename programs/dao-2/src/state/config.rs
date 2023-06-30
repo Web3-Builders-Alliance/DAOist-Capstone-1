@@ -11,6 +11,8 @@ pub struct DaoConfig {
     pub min_quorum: u64,
     pub min_threshold: u64,
     pub max_expiry: u64,
+    pub min_stake: u64,
+    pub prevoting_period: u64,
     pub proposal_count: u64,
     pub auth_bump: u8,
     pub config_bump: u8,
@@ -31,6 +33,8 @@ impl DaoConfig {
         min_quorum: u64,
         min_threshold: u64,
         max_expiry: u64,
+        min_stake: u64,
+        prevoting_period: u64,
         auth_bump: u8,
         config_bump: u8,
         mint_bump: u8,
@@ -44,6 +48,8 @@ impl DaoConfig {
         self.min_quorum = min_quorum;
         self.min_threshold = min_threshold;
         self.max_expiry = max_expiry;
+        self.min_stake = min_stake;
+        self.prevoting_period = prevoting_period;
         self.proposal_count = 0;
         self.auth_bump = auth_bump;
         self.config_bump = config_bump;
@@ -51,6 +57,12 @@ impl DaoConfig {
         self.treasury_bump = treasury_bump;
         Ok(())
     }
+
+    pub fn check_min_stake(&self, min_stake: u64) -> Result<()> {
+        require!(self.min_stake <= min_stake, DaoError::InvalidStakeAmount);
+        Ok(())
+    }
+
 
     
     pub fn check_min_threshold(&self, threshold: u64) -> Result<()> {
@@ -66,7 +78,7 @@ impl DaoConfig {
     }
 
     pub fn check_min_quorum(&self, quorum: u64) -> Result<()> {
-        require!(self.min_quorum <= quorum, DaoError::InvalidQuorum);
+        require!(self.min_quorum >= quorum, DaoError::InvalidQuorum);
         Ok(())
     }
 

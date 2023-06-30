@@ -10,6 +10,8 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
 pub mod dao_2 {
+    use state::VoteType;
+
     use crate::{errors::DaoError, state::ProposalType};
 
     use super::*;
@@ -24,9 +26,11 @@ pub mod dao_2 {
         max_supply: u64,
         min_quorum: u64,
         min_threshold: u64,
-        max_expiry: u64
+        max_expiry: u64,
+        min_stake: u64,
+        prevoting_period: u64,
     ) -> Result<()> {
-        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, min_threshold, max_expiry)
+        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, min_threshold, max_expiry, min_stake, prevoting_period)
     }
 
     // Handle token issuance
@@ -66,6 +70,7 @@ pub mod dao_2 {
         name: String, 
         gist: String, 
         proposal: ProposalType,
+        vote_type: VoteType,
         quorum: u64, 
         threshold: u64, 
         amount: u64, 
@@ -80,6 +85,7 @@ pub mod dao_2 {
             name, 
             gist,
             proposal,
+            vote_type,
             quorum,
             threshold, 
             amount,
