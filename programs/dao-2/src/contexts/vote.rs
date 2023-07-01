@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program::Transfer};
 
-use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState}, errors::DaoError};
+use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState, VoteOption, VoteChoice}, errors::DaoError};
 
 #[derive(Accounts)]
 pub struct Vote<'info> {
@@ -38,8 +38,11 @@ impl<'info> Vote<'info> {
     pub fn vote(
         &mut self,
         amount: u64,
+        choice: VoteChoice,
         bump: u8
     ) -> Result<()> {
+
+
         // Check proposal is open
         self.proposal.is_open()?;
         // Check proposal hasn't expired
@@ -47,7 +50,7 @@ impl<'info> Vote<'info> {
         // Ensure vote amount > 0
         require!(amount > 0, DaoError::InvalidVoteAmount);
         // Add vote to proposal
-        self.proposal.add_vote(amount)?;
+        self.proposal.add_vote(amount, choice)?;
         // Make sure user has staked
         self.stake_state.check_stake_amount(amount)?;
         // Add a vote account to the stake state
@@ -56,6 +59,7 @@ impl<'info> Vote<'info> {
         self.vote.init(
             self.owner.key(),
             amount,
+            choice,
             bump
         )
     }

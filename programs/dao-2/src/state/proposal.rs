@@ -1,6 +1,8 @@
 use crate::{constants::*, errors::DaoError, accounts::Vote};
 use anchor_lang::prelude::*;
 
+use super::{VoteOption, VoteChoice};
+
 #[account]
 pub struct Proposal {
     pub id: u64, // A unique ID. Can be sequential or random.
@@ -9,12 +11,13 @@ pub struct Proposal {
     pub proposal: ProposalType,
     pub vote_type: VoteType,
     pub result: ProposalStatus,
-    pub quorum: u64,
+    pub quorum: u8,
     pub threshold: u64,
     pub votes: u64,
     pub expiry: u64,
     pub bump: u8,
     pub created_time: i64,
+    pub vote_counts: [u64; 3],
 }
 
 impl Proposal {
@@ -26,7 +29,7 @@ impl Proposal {
         gist: String,
         proposal: ProposalType,
         vote_type: VoteType,
-        quorum: u64,
+        quorum: u8,
         threshold:u64,
         expiry: u64,
         bump: u8  
@@ -35,17 +38,21 @@ impl Proposal {
         require!(gist.len() < 73, DaoError::InvalidGist);
         self.id = id;
         self.proposal = proposal;
-        self.vote_type = vote_type;
+        self.vote_type = VoteType::SingleChoice;
         self.name = name;
         self.gist = gist;
         self.result = ProposalStatus::PreVoting;
         self.quorum = quorum;
+        self.threshold = threshold;
         self.votes = 0;
         self.bump = bump;
         self.expiry = Clock::get()?.slot.checked_add(expiry).ok_or(DaoError::Overflow)?;
         self.created_time = Clock::get()?.slot;
+        self.vote_counts = [0, 0, 0];
         Ok(())
+
     }
+
 
 
 
@@ -69,7 +76,7 @@ impl Proposal {
      pub fn try_initialize(
         &mut self
     ) { 
-        let current_time = Clock::get()?.slot;
+        let mut current_time = Clock::get()?.slot;
         let required_time = self.created_time + self.prevoting_period;
 
         require!(current_time >= required_time, DaoError::InvalidRequiredTime);
@@ -80,12 +87,22 @@ impl Proposal {
 
     //missing quorum
 
+
+     // compare self.vote_counts[0] with the quorum ( votes * self.quorum) /100
+
+     // let quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128;
+ /*    let mut quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128; 
+quorum = quorum as u64; */
+
     pub fn try_finalize(
         &mut self
     ) {
-        if self.votes >= self.threshold && self.check_expiry().is_ok() {
+
+        //Calculate nr of votes to achieve quorum
+        let quorum:u128 = (self.votes - self.vote_counts[2]) * ( self.quorum / 100 );   
+        if self.votes >= self.threshold && self.vote_counts[0] >= quorum && self.check_expiry().is_ok() {
             self.result = ProposalStatus::Succeeded
-        } else if self.votes < self.threshold && self.check_expiry().is_err() {
+        } else if self.votes < self.threshold && self.check_expiry().is_err() || self.vote_counts[1] >= quorum {
             self.result = ProposalStatus::Failed
         }
     }
@@ -128,25 +145,48 @@ impl Proposal {
 
     pub fn add_vote(
         &mut self,
-        amount: u64
+        amount: u64,
+        choice : VoteChoice,
     ) -> Result<()> {
         self.try_initialize();
         require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
         self.votes = self.votes.checked_add(amount).ok_or(DaoError::Overflow)?;
+        
+    match vote_option {
+        VoteOption::For => {
+            self.vote_counts[0] = self.vote_counts[0].checked_add(amount).ok_or(DaoError::Overflow)?;
+        }
+        VoteOption::Against => {
+            self.vote_counts[1] = self.vote_counts[1].checked_add(amount).ok_or(DaoError::Overflow)?;
+        }
+        VoteOption::Abstain => {
+            self.vote_counts[2] = self.vote_counts[2].checked_add(amount).ok_or(DaoError::Overflow)?;
+        }
+    }
         self.try_finalize();
         Ok(())
     }
 
     pub fn remove_vote(
         &mut self,
-        amount: u64
+        amount: u64,
+        vote_option : VoteOption,
     ) -> Result<()> {
         require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
         self.votes = self.votes.checked_sub(amount).ok_or(DaoError::Underflow)?;
+        match vote_option {
+            VoteOption::For => {
+                self.vote_counts[0] = self.vote_counts[0].checked_sub(amount).ok_or(DaoError::Underflow)?;
+            }
+            VoteOption::Against => {
+                self.vote_counts[1] = self.vote_counts[1].checked_sub(amount).ok_or(DaoError::Underflow)?;
+            }
+            VoteOption::Abstain => {
+                self.vote_counts[2] = self.vote_counts[2].checked_sub(amount).ok_or(DaoError::Underflow)?;
+            }
+        }
         Ok(())
     }
-
-
 
 
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, Debug, PartialEq, Eq)]

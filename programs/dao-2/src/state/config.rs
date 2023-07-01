@@ -21,7 +21,7 @@ pub struct DaoConfig {
 }
 
 impl DaoConfig {
-    pub const LEN: usize = 8 + 6 * U64_L + 4 * U8_L;
+    pub const LEN: usize = 8 + 10 * U64_L + 4 * U8_L;
 
     pub fn init(
         &mut self,
@@ -78,7 +78,7 @@ impl DaoConfig {
     }
 
     pub fn check_min_quorum(&self, quorum: u64) -> Result<()> {
-        require!(self.min_quorum >= quorum, DaoError::InvalidQuorum);
+        require!(self.min_quorum <= quorum, DaoError::InvalidQuorum);
         Ok(())
     }
 

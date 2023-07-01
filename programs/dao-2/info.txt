@@ -1,0 +1,12 @@
+	
+    		
+
+	Min 50 NFT for Proposal - done/perfect
+	Proposal Live for 3 days before Vote Live done / perfect		
+	Vote Live 	(for/against/abstain) 		
+	Need 500 Votes to Be Valid	min threshold done/perfect	
+	66% of Voters to Pass	quorum		done / +-
+	vote duration parameter - start with 7 days to execute	lock NFT for this duration - can't be unstaked done /+-
+    Check NFT for legitimacy to vote	
+
+

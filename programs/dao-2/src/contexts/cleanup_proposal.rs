@@ -53,7 +53,7 @@ impl<'info> CleanupProposal<'info> {
     }
 
     pub fn finalize_vote(&self) -> Result<()> {
-        msg!("Vote result: {} / {}", self.proposal.votes, self.proposal.quorum);
+        msg!("Vote result: {} / {} / {}", self.proposal.votes, self.proposal.quorum, self.proposal.threshold);
         msg!("Vote has {:?}", self.proposal.result);
         Ok(())
     }

@@ -10,6 +10,7 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
 pub mod dao_2 {
+    use anchor_lang::accounts::option;
     use state::VoteType;
 
     use crate::{errors::DaoError, state::ProposalType};
@@ -24,7 +25,7 @@ pub mod dao_2 {
         issue_amount: u64,
         proposal_fee: u64,
         max_supply: u64,
-        min_quorum: u64,
+        min_quorum: u128,
         min_threshold: u64,
         max_expiry: u64,
         min_stake: u64,
@@ -110,7 +111,7 @@ pub mod dao_2 {
     }
 
     // Vote on a proposal
-    pub fn vote(ctx: Context<Vote>, amount: u64) -> Result<()> {
+    pub fn vote(ctx: Context<Vote>, amount: u64, option: VoteOption) -> Result<()> {
         // Increment total number of votes in the proposal
         ctx.accounts.vote(amount, *ctx.bumps.get("vote").ok_or(DaoError::BumpError)?)
     }
