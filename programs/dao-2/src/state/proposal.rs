@@ -56,7 +56,7 @@ impl Proposal {
 
 
 
-        pub fn is_single_choice(
+    pub fn is_single_choice(
         &self
     ) -> Result<()> {
         require!(self.vote_type == VoteType::SingleChoice, DaoError::InvalidVoteType);
@@ -72,7 +72,8 @@ impl Proposal {
     }
 
 }
-    // transition from PreVoting to Open  -- WOULD THIS RE OPEN FAILED OR SUCESSED 
+
+    // transition from PreVoting to Open 
      pub fn try_initialize(
         &mut self,
         config:  &DaoConfig
@@ -85,16 +86,14 @@ impl Proposal {
         self.result = ProposalStatus::Open; 
         
     }
-
-
-
-     // let quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128;
-    /*    let mut quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128; 
-    quorum = quorum as u64; */
-
+ 
     pub fn try_finalize(
         &mut self
     ) {
+
+        // let quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128;
+        /*    let mut quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128; 
+        quorum = quorum as u64; */
 
         //Calculate nr of votes to achieve quorum
         let quorum:u128 = (self.votes - self.vote_counts[2]) * ( self.quorum / 100 );   

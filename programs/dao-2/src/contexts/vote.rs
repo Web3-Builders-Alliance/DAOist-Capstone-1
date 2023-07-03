@@ -23,7 +23,8 @@ pub struct Vote<'info> {
         payer = owner,
         seeds=[b"vote", proposal.key().as_ref(), owner.key().as_ref()],
         bump,
-        space = VoteState::LEN
+        space = VoteState::LEN,
+        constraint = // if single choice && if it tries to init 2nd time - it fails
     )]
     vote: Account<'info, VoteState>,
     #[account(
@@ -43,18 +44,11 @@ impl<'info> Vote<'info> {
     ) -> Result<()> {
 
 
-          // Check if user has already voted
-        if self.proposal.has_voted(&self.owner.key()) {
-            return Err(DaoError::SingleChoice.into());
+        
+        // Check proposal is open if not tries to initialize
+        if self.proposal.is_open().is_err() {
+         self.proposal.try_initialize(&self.config)?;
         }
-
-        if self.proposal.is_single_choice()? {
-            let user_already_voted = self.proposal.has_user_voted(self.owner.key())?;
-            require!(!user_already_voted, DaoError::SingleChoice);
-        }
-
-        // Check proposal is open
-        self.proposal.is_open()?;
         // Check proposal hasn't expired
         self.proposal.check_expiry()?;
         // Ensure vote amount > 0

@@ -13,7 +13,7 @@ pub mod dao_2 {
     use anchor_lang::accounts::option;
     use state::VoteType;
 
-    use crate::{errors::DaoError, state::ProposalType};
+    use crate::{errors::DaoError, state::{ProposalType, VoteChoice}};
 
     use super::*;
 
@@ -111,7 +111,7 @@ pub mod dao_2 {
     }
 
     // Vote on a proposal
-    pub fn vote(ctx: Context<Vote>, amount: u64, option: VoteOption) -> Result<()> {
+    pub fn vote(ctx: Context<Vote>, amount: u64, choice: VoteChoice) -> Result<()> {
         // Increment total number of votes in the proposal
         ctx.accounts.vote(amount, *ctx.bumps.get("vote").ok_or(DaoError::BumpError)?)
     }
