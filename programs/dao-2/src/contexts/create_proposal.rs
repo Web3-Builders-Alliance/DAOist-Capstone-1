@@ -48,14 +48,22 @@ impl<'info> CreateProposal<'info> {
         expiry: u64,
         bump: u8
     ) -> Result<()> {
+
+
+        //Check what kind of choices 
         
-     if proposal.is_single_choice() {
+    /*     if proposal.is_single_choice() {
         // Lógica para lidar com uma proposta de escolha única
+        for,against,etc
         } else if proposal.is_multi_choice() {
         // Lógica para lidar com uma proposta de escolha múltipla
+        many
         } else {    // ...
         }
+ */
+
         // Lógica para lidar com outros tipos de propostas
+
         // Make sure user has staked
         self.config.check_min_stake(self.stake_state.amount)?;
         // Check ID and add proposal

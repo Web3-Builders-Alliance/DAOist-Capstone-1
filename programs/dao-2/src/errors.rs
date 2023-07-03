@@ -41,5 +41,7 @@ pub enum DaoError {
     #[msg("Invalid Required Time")]
     InvalidRequiredTime,
     #[msg("Invalid Vote Type")]
-    InvalidVoteType
+    InvalidVoteType,
+    #[msg("AlreadyVoted")]
+    SingleChoice,
 }

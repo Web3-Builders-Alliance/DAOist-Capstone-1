@@ -31,7 +31,7 @@ impl VoteState {
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub enum VoteChoice {
-    For,
+    For,    
     Against,
     Abstain,
 }
