@@ -1,7 +1,7 @@
 use crate::{constants::*, errors::DaoError, accounts::Vote};
 use anchor_lang::prelude::*;
 
-use super::{VoteOption, VoteChoice, DaoConfig};
+use super::{VoteChoice, DaoConfig};
 
 #[account]
 pub struct Proposal {

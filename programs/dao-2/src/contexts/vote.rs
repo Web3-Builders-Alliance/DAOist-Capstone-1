@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program::Transfer};
 
-use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState, VoteOption, VoteChoice}, errors::DaoError};
+use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState, VoteChoice}, errors::DaoError};
 
 #[derive(Accounts)]
 pub struct Vote<'info> {

@@ -29,7 +29,7 @@ impl VoteState {
 }
 
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum VoteChoice {
     For,    
     Against,
