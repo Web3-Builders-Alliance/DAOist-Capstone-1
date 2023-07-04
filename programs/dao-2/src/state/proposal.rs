@@ -52,37 +52,33 @@ impl Proposal {
         Ok(())
 
     }
-
-
-
-
-    pub fn is_single_choice(
-        &self
-    ) -> Result<()> {
-        require!(self.vote_type == VoteType::SingleChoice, DaoError::InvalidVoteType);
-        Ok(())
-    }
-
-   
-    pub fn is_multi_choice(
-        &self
-    ) -> Result<()> {
-        require!(self.vote_type == VoteType::MultipleChoice, DaoError::InvalidVoteType);
-        Ok(())
-    }
-
 }
 
+    pub fn is_single_choice(
+    &self
+) -> Result<()> {
+    require!(self.vote_type == VoteType::SingleChoice, DaoError::InvalidVoteType);
+    Ok(())
+}
+
+
+    pub fn is_multi_choice(
+    &self
+) -> Result<()> {
+    require!(self.vote_type == VoteType::MultipleChoice, DaoError::InvalidVoteType);
+    Ok(())
+}
     // transition from PreVoting to Open 
-     pub fn try_initialize(
+    pub fn try_initialize(
         &mut self,
         config:  &DaoConfig
     ) { 
         self.is_votable()?;
-        let mut current_time = Clock::get()?.slot;
+        //Use current time variable or not?
+        /* let mut current_time = Clock::get()?.slot; */
         let required_time = self.created_time + config.prevoting_period;
 
-        require!(current_time >= required_time, DaoError::InvalidRequiredTime);
+        require!(Clock::get()?.slot >= required_time, DaoError::InvalidRequiredTime);
         self.result = ProposalStatus::Open; 
         
     }
@@ -90,11 +86,9 @@ impl Proposal {
     pub fn try_finalize(
         &mut self
     ) {
-
         // let quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128;
-        /*    let mut quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128; 
+        /* let mut quorum:u128 = 100000 as u128 * 45 as u128 / 100 as u128; 
         quorum = quorum as u64; */
-
         //Calculate nr of votes to achieve quorum
         let quorum:u128 = (self.votes - self.vote_counts[2]) * ( self.quorum / 100 );   
         if self.votes >= self.threshold && self.vote_counts[0] >= quorum && self.check_expiry().is_ok() {
