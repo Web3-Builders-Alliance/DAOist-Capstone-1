@@ -55,6 +55,7 @@ impl<'info> Initialize<'info> {
         min_threshold: u64,
         max_expiry: u64,
         min_stake:u64,
+        min_choices:u8,
         prevoting_period: u64,
     ) -> Result<()> {
         let (
@@ -79,6 +80,7 @@ impl<'info> Initialize<'info> {
             min_threshold,
             max_expiry,
             min_stake,
+            min_choices,
             prevoting_period,
             auth_bump,
             config_bump,

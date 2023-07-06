@@ -46,28 +46,18 @@ impl<'info> CreateProposal<'info> {
         quorum: u64,
         threshold: u64,
         expiry: u64,
+        choices:u8,
         bump: u8
     ) -> Result<()> {
-
-
-        //Check what kind of choices 
-        
-    /*     if proposal.is_single_choice() {
-        // Lógica para lidar com uma proposta de escolha única
-        for,against,etc
-        } else if proposal.is_multi_choice() {
-        // Lógica para lidar com uma proposta de escolha múltipla
-        many
-        } else {    // ...
-        }
- */
-
         // Lógica para lidar com outros tipos de propostas
-
+        // freeze the nfts instead of stake
+        // check nr of ids with proposal status open if bigger than certain number. quadratic fees.(future)
         // Make sure user has staked
         self.config.check_min_stake(self.stake_state.amount)?;
         // Check ID and add proposal
         self.config.add_proposal(id)?;
+        // Check minimum choices
+        self.config.check_min_choices(choices)?;
         // Check minimum quorum
         self.config.check_min_quorum(quorum)?;
         // Check minimum threshold
@@ -84,6 +74,7 @@ impl<'info> CreateProposal<'info> {
             quorum,
             threshold,
             expiry,
+            choices,
             bump
         )
     }

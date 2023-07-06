@@ -4,7 +4,7 @@ use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState, VoteChoi
 
 #[derive(Accounts)]
 
-pub struct Vote<'info> {
+pub struct VoteNft<'info> {
     #[account(mut)]
     owner: Signer<'info>,
     #[account(
@@ -22,7 +22,7 @@ pub struct Vote<'info> {
     #[account(
         init,
         payer = owner,
-        seeds=[b"vote", proposal.key().as_ref(), owner.key().as_ref()],
+        seeds=[b"vote", nft_master.key().as_ref(), proposal.key().as_ref()],
         bump,
         space = VoteState::LEN,
     )]
@@ -32,12 +32,11 @@ pub struct Vote<'info> {
         bump = config.config_bump
     )]
     config: Account<'info, DaoConfig>,
+    pub nft_master: Account<'info, MasterEditionAccount>,
     system_program: Program<'info, System>
 }
-
-
-
-impl<'info> Vote<'info> {
+ 
+impl<'info> VoteNft<'info> {
     pub fn vote(
         &mut self,
         amount: u64,
@@ -52,23 +51,6 @@ impl<'info> Vote<'info> {
         self.proposal.check_expiry()?;
         // Ensure vote amount > 0
         require!(amount > 0, DaoError::InvalidVoteAmount);
-
-/*         // Check the vote type 
-        match self.proposal.vote_type {
-        VoteType::SingleChoice => {
-         // Check if the user has already made a choice
-        require!(!self.vote.votestate, DaoError::AlreadyVotedSingleChoice);
-    
-        // Add vote to proposal
-        self.proposal.add_vote(amount, choice)?;
-        self.vote.votestate = true;
-        }
-        VoteType::MultipleChoice => {
-        // Add vote to proposal
-        self.proposal.add_vote(amount, choice)?;
-        }
-        } */
-
         // Add vote to proposal
         self.proposal.add_vote(amount, choice)?;
         // Make sure user has staked

@@ -44,4 +44,6 @@ pub enum DaoError {
     InvalidVoteType,
     #[msg("AlreadyVoted")]
     SingleChoice,
+    #[msg("Invalid choices amount")]
+    InvalidChoicesAmount,
 }

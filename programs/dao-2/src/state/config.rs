@@ -12,6 +12,7 @@ pub struct DaoConfig {
     pub min_threshold: u64,
     pub max_expiry: u64,
     pub min_stake: u64,
+    pub min_choices: u8,
     pub prevoting_period: u64,
     pub proposal_count: u64,
     pub auth_bump: u8,
@@ -34,6 +35,7 @@ impl DaoConfig {
         min_threshold: u64,
         max_expiry: u64,
         min_stake: u64,
+        min_choices: u8,
         prevoting_period: u64,
         auth_bump: u8,
         config_bump: u8,
@@ -49,12 +51,18 @@ impl DaoConfig {
         self.min_threshold = min_threshold;
         self.max_expiry = max_expiry;
         self.min_stake = min_stake;
+        self.min_choices = min_choices;
         self.prevoting_period = prevoting_period;
         self.proposal_count = 0;
         self.auth_bump = auth_bump;
         self.config_bump = config_bump;
         self.mint_bump = mint_bump;
         self.treasury_bump = treasury_bump;
+        Ok(())
+    }
+
+    pub fn check_min_choices(&self, min_choices: u8) -> Result<()>{
+        require!(self.min_choices <= min_choices, DaoError::InvalidChoicesAmount);
         Ok(())
     }
 

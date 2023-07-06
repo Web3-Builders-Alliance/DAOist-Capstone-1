@@ -29,9 +29,10 @@ pub mod dao_2 {
         min_threshold: u64,
         max_expiry: u64,
         min_stake: u64,
+        min_choices: u8,
         prevoting_period: u64,
     ) -> Result<()> {
-        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, min_threshold, max_expiry, min_stake, prevoting_period)
+        ctx.accounts.init(seed, &ctx.bumps, issue_price, issue_amount, proposal_fee, max_supply, min_quorum, min_threshold, max_expiry, min_stake, min_choices, prevoting_period)
     }
 
     // Handle token issuance
@@ -74,6 +75,8 @@ pub mod dao_2 {
         vote_type: VoteType,
         quorum: u64, 
         threshold: u64, 
+        expiry: u64,
+        choices:u8,
         amount: u64, 
         data: Vec<u8>
     ) -> Result<()> {
@@ -88,7 +91,9 @@ pub mod dao_2 {
             proposal,
             vote_type,
             quorum,
-            threshold, 
+            threshold,
+            expiry,
+            choices, 
             amount,
             *ctx.bumps.get("proposal").ok_or(DaoError::BumpError)?
         )
@@ -111,7 +116,7 @@ pub mod dao_2 {
     }
 
     // Vote on a proposal
-    pub fn vote(ctx: Context<Vote>, amount: u64, choice: VoteChoice) -> Result<()> {
+    pub fn vote(ctx: Context<Vote>, amount: u64, choice: u8) -> Result<()> {
         // Increment total number of votes in the proposal
         ctx.accounts.vote(amount, *ctx.bumps.get("vote").ok_or(DaoError::BumpError)?)
     }
