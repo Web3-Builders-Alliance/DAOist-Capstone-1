@@ -13,7 +13,7 @@ pub mod dao_2 {
     use anchor_lang::accounts::option;
     use state::VoteType;
 
-    use crate::{errors::DaoError, state::{ProposalType, VoteChoice}};
+    use crate::{errors::DaoError, state::{ProposalType}};
 
     use super::*;
 
@@ -115,11 +115,12 @@ pub mod dao_2 {
         ctx.accounts.execute_proposal()
     }
 
-    // Vote on a proposal
+    // Vote on a proposal with token
     pub fn vote(ctx: Context<Vote>, amount: u64, choice: u8) -> Result<()> {
         // Increment total number of votes in the proposal
         ctx.accounts.vote(amount, *ctx.bumps.get("vote").ok_or(DaoError::BumpError)?)
     }
+
 
     // Close a voting position after a proposal has passed/expired
     pub fn cleanup_vote(ctx: Context<Unvote>) -> Result<()> {
@@ -132,4 +133,23 @@ pub mod dao_2 {
         // Decrement votes for user and proposal
         ctx.accounts.remove_vote()
     }
+
+     // Vote on a proposal with NFT
+     pub fn vote_nft(ctx: Context<VoteNft>, amount: u64, choice: u8) -> Result<()> {
+        // Increment total number of votes in the proposal
+         ctx.accounts.vote_nft(amount, *ctx.bumps.get("vote").ok_or(DaoError::BumpError)?)
+         
+    }
+
+    // Close a NFT voting position after a proposal has passed/expired
+    pub fn cleanup_vote_nft(ctx: Context<UnvoteNft>) -> Result<()> {
+        // Decrement votes for user
+        ctx.accounts.cleanup_vote_nft()
+    }
+
+    // Close a voting position in an active proposal
+    pub fn remove_vote_nft(ctx: Context<UnvoteNft>) -> Result<()> {
+        // Decrement votes for user and proposal
+        ctx.accounts.remove_vote_nft()
+    }    
 }

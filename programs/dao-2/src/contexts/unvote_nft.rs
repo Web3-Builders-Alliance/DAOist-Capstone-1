@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState}, errors::DaoError};
 
 #[derive(Accounts)]
-pub struct Unvote<'info> {
+pub struct UnvoteNft<'info> {
     #[account(mut)]
     owner: Signer<'info>,
     #[account(
@@ -21,7 +21,7 @@ pub struct Unvote<'info> {
     #[account(
         mut,
         close = treasury,
-        seeds=[b"vote", proposal.key().as_ref(), owner.key().as_ref()],
+        seeds=[b"vote", nft_master.key().as_ref(), proposal.key().as_ref()],
         bump = vote.bump
     )]
     vote: Account<'info, VoteState>,
@@ -38,8 +38,8 @@ pub struct Unvote<'info> {
     system_program: Program<'info, System>
 }
 
-impl<'info> Unvote<'info> {
-    pub fn cleanup_vote(
+impl<'info> UnvoteNft<'info> {
+    pub fn cleanup_vote_nft(
         &mut self
     ) -> Result<()> {
         if self.proposal.is_open().is_ok() && self.proposal.check_expiry().is_ok() {
@@ -49,7 +49,7 @@ impl<'info> Unvote<'info> {
         self.stake_state.remove_account()
     }
 
-    pub fn remove_vote(
+    pub fn remove_vote_nft(
         &mut self
     ) -> Result<()> {
         self.proposal.is_open()?;

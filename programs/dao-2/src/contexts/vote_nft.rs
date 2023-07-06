@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program::Transfer};
 
-use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState, VoteChoice}, errors::DaoError};
+use crate::{state::{config::DaoConfig, Proposal, StakeState, VoteState}, errors::DaoError};
 
 #[derive(Accounts)]
 
@@ -37,7 +37,7 @@ pub struct VoteNft<'info> {
 }
  
 impl<'info> VoteNft<'info> {
-    pub fn vote(
+    pub fn vote_nft(
         &mut self,
         amount: u64,
         choice: u8,

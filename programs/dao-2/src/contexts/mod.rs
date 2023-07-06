@@ -7,7 +7,11 @@ pub mod create_proposal;
 pub mod cleanup_proposal;
 pub mod vote;
 pub mod unvote;
+pub mod vote_nft;
+pub mod unvote_nft;
 
+pub use unvote_nft::*;
+pub use vote_nft::*;
 pub use initialize::*;
 pub use issue::*;
 pub use initialize_stake::*;

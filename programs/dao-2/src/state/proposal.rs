@@ -1,7 +1,7 @@
 use crate::{constants::*, errors::DaoError, accounts::Vote};
 use anchor_lang::prelude::*;
 
-use super::{VoteChoice, DaoConfig};
+use super::{ DaoConfig};
 
 #[account]
 pub struct Proposal {
@@ -84,6 +84,10 @@ impl Proposal {
     pub fn try_finalize(
         &mut self
     ) {
+
+
+        //vote_counts[0] = for, vote_counts[1] = abstain
+        
         let quorum:u128 = (self.votes - self.vote_counts[2]) as u128 * ( self.quorum / 100 ) as u128;
         quorum = quorum as u64;   
         if self.votes >= self.threshold && self.vote_counts[0] >= quorum && self.check_expiry().is_ok() {
@@ -135,11 +139,11 @@ impl Proposal {
     pub fn add_vote(
         &mut self,
         amount: u64,
-        choice : VoteChoice,
+        choice : u8,
     ) -> Result<()> {
         self.try_initialize();
         require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
-        require!(choice < self.choices, DaoError::InvalidChoicesAmount);
+        require!(choice < self.choices, DaoError::InvalidChoice);
         self.votes = self.votes.checked_add(amount).ok_or(DaoError::Overflow)?;
         self.vote_counts[choice as usize] = self.vote_counts[choice as usize].checked_add(amount).ok_or(DaoError::Overflow)?; 
         self.try_finalize();
@@ -149,7 +153,7 @@ impl Proposal {
     pub fn remove_vote(
         &mut self,
         amount: u64,
-        choice : VoteChoice,
+        choice : u8,
     ) -> Result<()> {
         require!(self.result == ProposalStatus::Open, DaoError::InvalidProposalStatus);
         self.votes = self.votes.checked_sub(amount).ok_or(DaoError::Underflow)?;
